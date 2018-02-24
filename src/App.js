@@ -1,16 +1,59 @@
 import React, { Component } from 'react';
 import './App.css';
 
-let defaultTextColor = '#fff';
 let defaultStyle = {
-  color:defaultTextColor
+  color:'#fff'
 };
 
-class Aggregate extends Component {
+let fakeServerData = {
+  user: {
+    name: 'Peter Liu',
+    playlists: [
+      {
+        name:'david',
+        songs:[{name:'beat it',duration:1345},{name:'Rose helicopter',duration:1345},{name:'fixed you',duration:1345}]
+      },
+      {
+        name:'eveyang',
+        songs:[{name:'beat it',duration:1345},{name:'Rose helicopter',duration:1345},{name:'fixed you',duration:1345}]
+      },
+      {
+        name:'jackson',
+        songs:[{name:'beat it',duration:1345},{name:'Rose helicopter',duration:1345},{name:'fixed you',duration:1345}]
+      },
+      {
+        name:'beyond',
+        songs:[{name:'beat it',duration:1345},{name:'Rose helicopter',duration:1345},{name:'fixed you',duration:1345}]
+      }
+    ]
+  }
+}
+
+class PlaylistCounter extends Component {
+
   render() {
+
+    const {playlists} = this.props;
+
     return (
       <div style={{...defaultStyle,width:'40%',display:'inline-block'}}>
-        <h2>Number Text</h2>
+        <h2>{ playlists && playlists.length} playlists</h2>
+      </div>
+    );
+  }
+}
+
+class HourCounter extends Component {
+
+  render() {
+
+    const {playlists} = this.props;
+    //use reduce
+    console.log(playlists);
+
+    return (
+      <div style={{...defaultStyle,width:'40%',display:'inline-block'}}>
+        <h2>{playlists && playlists.length} hours</h2>
       </div>
     );
   }
@@ -45,17 +88,42 @@ class Playlists extends Component {
 }
 
 class App extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      serverData:{}
+    }
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        serverData: fakeServerData
+      })
+    }, 1000)
+  }
+
   render() {
+    console.log(this.state.serverData);
     return (
       <div className="App">
-        <h1>Title</h1>
-        <Aggregate />
-        <Aggregate />
-        <Filter />
-        <Playlists />
-        <Playlists />
-        <Playlists />
-        <Playlists />
+        {this.state.serverData.user ?
+          <div>
+            <h1 style={{...defaultStyle ,'fontSize':'54px'}}>
+              {this.state.serverData.user.name} Playlists
+            </h1>
+            <div>
+              <PlaylistCounter playlists={this.state.serverData.user.playlists}/>
+              <HourCounter playlists={this.state.serverData.user.playlists}/>
+            </div>
+            <Filter />
+            <Playlists />
+            <Playlists />
+            <Playlists />
+            <Playlists />
+          </div> : <h1 style={defaultStyle}>Loading...</h1>
+        }
       </div>
     );
   }

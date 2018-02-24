@@ -1,6 +1,6 @@
 {
-  "name": "better-playlists",
-  "version": "0.1.0",
+  "name": "music-playlists",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
