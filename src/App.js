@@ -49,11 +49,19 @@ class HourCounter extends Component {
 
     const {playlists} = this.props;
     //use reduce
-    console.log(playlists);
+    let allSongs = playlists.reduce((songs,eachPlayList) => {
+      return songs.concat(eachPlayList.songs)
+    },[]);
+
+    let totalDuration = allSongs.reduce((sum, eachSong) => {
+      return Math.round((sum + eachSong.duration) / 60);
+    },0)
+
+    console.log(allSongs);
 
     return (
       <div style={{...defaultStyle,width:'40%',display:'inline-block'}}>
-        <h2>{playlists && playlists.length} hours</h2>
+        <h2>{playlists && totalDuration} hours</h2>
       </div>
     );
   }
