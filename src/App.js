@@ -14,12 +14,12 @@ let fakeServerData = {
         songs:[{name:'beat it',duration:3345},{name:'Rose helicopter',duration:1645},{name:'fixed you',duration:2345}]
       },
       {
-        name:'eveyang',
-        songs:[{name:'tomorrow',duration:4145},{name:'desperate',duration:1145},{name:'love story',duration:1645}]
+        name:'Eveyang',
+        songs:[{name:'tomorrow',duration:6145},{name:'desperate',duration:1145},{name:'love story',duration:1645}]
       },
       {
         name:'jackson',
-        songs:[{name:'yellow',duration:1445},{name:'remember you',duration:2451},{name:'18 years',duration:3245}]
+        songs:[{name:'yellow',duration:8445},{name:'remember you',duration:2451},{name:'18 years',duration:3245}]
       },
       {
         name:'beyond',
@@ -54,10 +54,14 @@ class HourCounter extends Component {
     },[]);
 
     let totalDuration = allSongs.reduce((sum, eachSong) => {
-      return Math.round((sum + eachSong.duration) / 60);
+      // return Math.round((sum + eachSong.duration) / 60);
+      const minutes = sum + eachSong.duration;
+      const hours = minutes / 60;
+      console.log("hours:",hours);
+      return minutes;
     },0)
 
-    console.log(allSongs);
+    console.log(totalDuration);
 
     return (
       <div style={{...defaultStyle,width:'40%',display:'inline-block'}}>
@@ -72,7 +76,7 @@ class Filter extends Component {
     return (
       <div style={defaultStyle}>
         <img/>
-        <input type="text" />
+        <input type="text" onChange={(event) => this.props.onTextChange(event)}/>
         Filter
       </div>
     );
@@ -102,8 +106,14 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      serverData:{}
+      serverData:{},
+      filterString:''
     }
+    this.filterChange = this.filterChange.bind(this);
+  }
+  //传递给filter组件
+  filterChange = (event) => {
+    this.setState({filterString:event.target.value})
   }
 
   componentDidMount() {
@@ -111,10 +121,18 @@ class App extends Component {
       this.setState({
         serverData: fakeServerData
       })
-    }, 1000)
+    }, 1000);
   }
 
   render() {
+
+    const playlistToRender = this.state.serverData.user ?
+      this.state.serverData.user.playlists.filter(playlist =>
+        playlist.name.toLowerCase().includes(
+          this.state.filterString.toLowerCase()
+        )
+      ) : [];
+
     return (
       <div className="App">
         {this.state.serverData.user ?
@@ -123,11 +141,11 @@ class App extends Component {
               {this.state.serverData.user.name} Playlists
             </h1>
             <div>
-              <PlaylistCounter playlists={this.state.serverData.user.playlists}/>
-              <HourCounter playlists={this.state.serverData.user.playlists}/>
+              <PlaylistCounter playlists={playlistToRender}/>
+              <HourCounter playlists={playlistToRender}/>
             </div>
-            <Filter />
-            {this.state.serverData.user.playlists.map(playlist =>
+            <Filter onTextChange={this.filterChange}/>
+            {playlistToRender.map(playlist =>
                <Playlists playlist={playlist} key={playlist.name}/>
              )}
           </div> : <h1 style={defaultStyle}>Loading...</h1>
